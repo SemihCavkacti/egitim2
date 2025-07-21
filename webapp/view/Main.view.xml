@@ -1,0 +1,46 @@
+<mvc:View controllerName="com.yedas.mm.employees.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns:f="sap.ui.layout.form"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+        <content>
+        <f:SimpleForm id="SimpleFormChange354"
+			minWidth="1024"
+			maxContainerCols="2"
+			editable="true"
+			layout="ResponsiveGridLayout"
+			title="{i18n>EMPLOYEE}"
+			labelSpanL="3"
+			labelSpanM="3"
+			emptySpanL="4"
+			emptySpanM="4"
+			columnsL="1"
+			columnsM="1"
+			class="editableForm">
+            <f:content>
+				<Label required="true" text="{i18n>EMP_ID}"/>
+				<Input value="{mainModel>/Userid}" submit="onGetData"/>
+                <Label required="false" text="{i18n>EMP_NAME}"/>
+				<Input value="{mainModel>/Username}"/>
+                <Label required="false" text="{i18n>EMP_SNAME}"/>
+				<Input value="{mainModel>/Usersname}"/>
+                <Label required="false" text="{i18n>EMP_DEP}"/>
+				<Input value="{mainModel>/Departman}"/>
+                <Label required="false" text="{i18n>EMP_CITY}"/>
+				<Input value="{mainModel>/City}"/>
+                <Label required="false" text="{i18n>EMP_STATU}"/>
+				<Input value="{mainModel>/Statu}"/>
+			</f:content>
+        </f:SimpleForm>
+        </content>
+        <footer>
+			<Toolbar>
+				<ToolbarSpacer/>
+                <Button id="btn_persAll" text="{i18n>PERS_LOAD}" type="Accept" enabled="true" press="onLoadPers" />
+				<Button id="btn_persAdd" text="{i18n>PERS_ADD}" icon="sap-icon://add-contact" type="Accept" enabled="true" press="onAddPers" />
+                <Button id="btn_persUpd" text="{i18n>PERS_UPD}" type="Accept" enabled="true" press="onUpdatePers" />
+                <Button id="btn_persDel" text="{i18n>PERS_DEL}" type="Accept" enabled="true" press="onDeletePers" />
+				<Button id="btn_clear" text="{i18n>CLEAR}" type="Reject" enabled="true" press="onClear" class="sapUiTinyMarginBegin"/>
+			</Toolbar>
+		</footer>
+    </Page>
+</mvc:View>
