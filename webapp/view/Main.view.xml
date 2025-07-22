@@ -35,7 +35,8 @@
                         <Input value="{mainModel>/Departman}"/>
                         <Label required="false" text="{i18n>EMP_CITY}"/>
                         <Select
-                            selectedKey="{mainModel>/City}"
+                            id="id_citySelect"
+                            selectedKey="{mainModel>/Bland}"
                             items="{
                                 path: '/getCitiesSet'
                             }">
@@ -48,6 +49,62 @@
                 </f:SimpleForm>
             </content>
         </Panel>
+        <Table id="idEmployeesTable"
+                noDataText="{i18n>NO_DATA}"
+                items="{path: 'mainModel>/employees'}" 
+                mode="SingleSelectMaster"
+                itemPress="onSelectEmployees">
+            <headerToolbar>
+            <OverflowToolbar>
+                <content>
+                    <Title text="{i18n>EMPLOYEES}({mainModel>/count})" level="H2"/>
+                </content>
+            </OverflowToolbar>
+            </headerToolbar>
+            <columns>
+                <Column>
+                    <Text text="{i18n>PERNR}" />
+                </Column>
+                <Column>
+                    <Text text="{i18n>NAME}" />
+                </Column>
+                 <Column demandPopin="true" minScreenWidth="Desktop">
+                    <Text text="{i18n>SNAME}" />
+                </Column>
+                 <Column demandPopin="true" minScreenWidth="Desktop">
+                    <Text text="{i18n>DEPARTMAN}" />
+                </Column>
+                <Column demandPopin="true" minScreenWidth="Desktop">
+                    <Text text="{i18n>CITY}" />
+                </Column>
+                <Column demandPopin="true" minScreenWidth="Desktop">
+                    <Text text="{i18n>STATU}" />
+                </Column>
+                <Column demandPopin="true" minScreenWidth="Desktop">
+                    <Text text="" />
+                </Column>
+            </columns>
+            <items>
+            <ColumnListItem type="Active">
+                <cells>
+                    <ObjectIdentifier
+                            title="{mainModel>Userid}"/>
+                    <Text text="{mainModel>Username}" />
+                    <Text text="{mainModel>Usersname}" />
+                    <ObjectStatus
+                        text="{mainModel>Departman}"
+                        state="Information"/>
+                    <ObjectStatus
+                        text="{path:'mainModel>City', formatter : 'com.yedas.mm.demo.model.Formatter.getCity'}"
+                        state="Information" />
+                    <ObjectStatus
+                        text="{path:'mainModel>Statu', formatter : 'com.yedas.mm.demo.model.Formatter.getStatu'}"
+                        state="Information" />
+                    <Button id="btn_persDel" icon="sap-icon://decline"   type="Reject" enabled="true" press="onDeletePers" />
+                </cells>
+            </ColumnListItem>
+        </items>
+        </Table>
         </content>
         <!--
         <footer>

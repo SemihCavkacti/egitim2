@@ -1,7 +1,9 @@
 sap.ui.define([
-    "sap/ui/core/mvc/Controller"
+    "sap/ui/core/mvc/Controller",
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
 ],
-function (Controller) {
+function (Controller, MessageToast, MessageBox) {
     "use strict";
 
     return Controller.extend("com.yedas.mm.employees.controller.Main", {
@@ -12,7 +14,13 @@ function (Controller) {
 
             this.oDataModel = this.getOwnerComponent().getModel();
 
+            //Sayfa yönlendirmelerinde kullanıcılacak tanımlama
+            this._oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+            this._oRouter.getRoute("main").attachPatternMatched(this._onObjectMatched, this);
+
             this.onConfig();
+            this.onLoadPers();
+
         },
 
         //Görsel kısımlar yüklendikten sonra bu kısma düşer
@@ -28,6 +36,10 @@ function (Controller) {
         //Uygulamadan çıktığında bu fonksiyona düşer.
         onExit : function(){
 
+        },
+
+        _onObjectMatched : function(oEvent){
+            this.onLoadPers();
         },
 
         onConfig : function(){
@@ -56,24 +68,38 @@ function (Controller) {
 
         },
 
+        onSelectEmployees : function(oEvent){
+            var oItem = oEvent.getParameter("listItem").getBindingContext("mainModel").getObject();
+            var userId = oItem.Userid;
+
+            
+            this._oRouter.navTo("Detail",{pernr : userId});
+            
+
+
+        },
+
         //Pernr SH listesinin seçim eventi
         onDialogClose : function(oEvent){
             var oModel = this.getView().getModel("mainModel"); 
             var oItem = oEvent.getParameter("selectedItem");
             var oContext = oItem.getBindingContext("mainModel").getObject();
 
-            oModel.setProperty("/productName", oContext.name);
+            oModel.setProperty("/Userid", oContext.Sicilno);
+            oModel.setProperty("/Username", oContext.Username);
+            oModel.setProperty("/Usersname", oContext.Usersname);
         },
 
         //Personel Ekleme Fonksiyonu
         onAddPers : function(){
             var that = this;
+            var oSelectItem = this.getView().byId("id_citySelect");
             var userId = this.oModel.getProperty("/Userid");
             var userName = this.oModel.getProperty("/Username");
             var userSName = this.oModel.getProperty("/Usersname");
             var userDep = this.oModel.getProperty("/Departman");
-            var userCity = this.oModel.getProperty("/City");
-            var userStatu = this.oModel.getProperty("/Statu");
+            var userCity = oSelectItem.getSelectedItem().mProperties.text;
+            var userStatu = (this.oModel.getProperty("/persStatu") == true) ? 'X' : '';
             
 
             var oData = {
@@ -89,48 +115,17 @@ function (Controller) {
             this.oDataModel.create("/EmployeesSet", oData, {
                 success : function(oData, response){
                     sap.ui.core.BusyIndicator.hide();
+                    MessageBox.success("İşlem Başarı ile gerçekleşti!");
+                    that.onLoadPers();
                 },
                 error : function(oError){
                     sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Bir hata oluştu!");
                 }
 
             });
 
         },
-
-        //Personel Update Fonksiyonu
-        onUpdatePers : function(){
-            var that = this;
-            var userId = this.oModel.getProperty("/Userid");
-            var userName = this.oModel.getProperty("/Username");
-            var userSName = this.oModel.getProperty("/Usersname");
-            var userDep = this.oModel.getProperty("/Departman");
-            var userCity = this.oModel.getProperty("/City");
-            var userStatu = this.oModel.getProperty("/Statu");
-            
-
-            var oData = {
-                Userid      : userId,
-                Username    : userName,
-                Usersname   : userSName,
-                Departman   : userDep,
-                City        : userCity,
-                Statu       : userStatu
-            }
-
-            sap.ui.core.BusyIndicator.show();
-            this.oDataModel.update(`/EmployeesSet(Userid='${userId}')`, oData, {
-                success : function(oData, response){
-                    sap.ui.core.BusyIndicator.hide();
-                },
-                error : function(oError){
-                    sap.ui.core.BusyIndicator.hide();
-                }
-
-            });
-
-        },
-
 
         //İlgili User'ın datasını almak için kullanılır.    
         onGetData : function(oEvent){
@@ -163,31 +158,54 @@ function (Controller) {
             this.oDataModel.read("/EmployeesSet",{
                 success : function(oData, response){
                     sap.ui.core.BusyIndicator.hide();
-
+                    that.oModel.setProperty("/employees", oData.results);
+                    that.oModel.setProperty("/count", oData.results.length);
                 },
                 error : function(oError){
                     sap.ui.core.BusyIndicator.hide();
+                    MessageBox.error("Bir hata oluştu!");
                 }
             });
         },
 
-        onDeletePers : function(){
-            var userId = this.oModel.getProperty("/Userid");
+        //Satır bazlı personel silme işlemi gerçekleştirilir.
+        onDeletePers : function(oEvent){
+            var that = this;
+            var oContent = oEvent.getSource().getBindingContext("mainModel");
+            var userId = oContent.getObject().Userid;
 
             if(userId !== ""){
+            MessageBox.success("User Id'si" + userId + "olan satır silinecektir." + "Emin misiniz ?", {
+                title : "İşlem Türü",
+                actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                emphasizedAction: MessageBox.Action.OK,
+                onClose: function (sAction) {
+					if(sAction == "OK") {
+                         sap.ui.core.BusyIndicator.show();
+                        that.oDataModel.remove(`/EmployeesSet(Userid='${userId}')`,{
+                            success : function(oData, response){
+                                sap.ui.core.BusyIndicator.hide();
+                                MessageBox.success("Silme işlemi başarı ile gerçekleşti!");
+                                that.onLoadPers();
 
-            sap.ui.core.BusyIndicator.show();
-            this.oDataModel.remove(`/EmployeesSet(Userid='${userId}')`,{
-                success : function(oData, response){
-                    sap.ui.core.BusyIndicator.hide();
-                },
-                error : function(oError){
-                    sap.ui.core.BusyIndicator.hide();
-                }
+                            },
+                            error : function(oError){
+                                sap.ui.core.BusyIndicator.hide();
+                                MessageBox.error("Bir hata oluştu!");
+                        }
+
+            });
+                    }
+                    else {
+                        return;
+                    }
+
+				},
+                dependentOn: this.getView()
 
             });
             }
-
+            
             else {
                 sap.m.MessageToast.show("User id alanı boş olamaz.");
             }

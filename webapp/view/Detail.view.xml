@@ -1,0 +1,47 @@
+<mvc:View controllerName="com.yedas.mm.employees.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" displayBlock="true" xmlns:f="sap.ui.layout.form"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+        <content>
+        <Panel expandable="true" expanded="true">
+        	<headerToolbar>
+			<OverflowToolbar active="true" press="onOverflowToolbarPress">
+				<Title text="{i18n>EMPLOYEE}"/>
+				<ToolbarSpacer />
+				<Button id="btn_persUpdate" text="{i18n>PERS_UPD}" type="Accept" enabled="true" press="onUpdatePers" />
+			</OverflowToolbar>
+		    </headerToolbar>
+            <content>
+            <f:SimpleForm id="detailForm"
+                    minWidth="1024"
+                    maxContainerCols="2"
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanL="3"
+                    labelSpanM="3"
+                    emptySpanL="4"
+                    emptySpanM="4"
+                    columnsL="1"
+                    columnsM="1"
+                    class="editableForm">
+                    <f:content>
+                        <Label required="true" text="{i18n>EMP_ID}"/>
+                        <Input value="{mainModel>/DetailUserid}" enabled="false"/>
+                        <Label required="false" text="{i18n>EMP_NAME}"/>
+                        <Input value="{mainModel>/DetailUsername}"/>
+                        <Label required="false" text="{i18n>EMP_SNAME}"/>
+                        <Input value="{mainModel>/DetailUsersname}"/>
+                        <Label required="false" text="{i18n>EMP_DEP}"/>
+                        <Input value="{mainModel>/DetailDepartman}"/>
+                        <Label required="false" text="{i18n>EMP_CITY}"/>
+                        <Input value="{mainModel>/DetailCity}"/>
+                        <!--<Input value="{mainModel>/City}"/>-->
+                        <Label required="false" text="{i18n>EMP_STATU}"/>
+                        <CheckBox text="{i18n>STATU}" selected="{mainModel>/DetailStatu}"/>
+                    </f:content>
+                </f:SimpleForm>
+                 </content>
+        </Panel>
+        </content>
+    </Page>
+</mvc:View>

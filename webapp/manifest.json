@@ -98,20 +98,33 @@
       },
       "routes": [
         {
-          "name": "RouteMain",
-          "pattern": ":?query:",
+          "pattern": "",
+          "name": "main",
           "target": [
-            "TargetMain"
+            "main"
+          ]
+        },
+        {
+          "pattern": "Detail/{pernr}",
+          "name": "Detail",
+          "target": [
+            "Detail"
           ]
         }
       ],
       "targets": {
-        "TargetMain": {
+        "main": {
           "viewType": "XML",
           "transition": "slide",
           "clearControlAggregation": false,
-          "viewId": "Main",
-          "viewName": "Main"
+          "viewId": "main",
+          "viewName": "Main",
+          "viewLevel": 1
+        },
+        "Detail": {
+          "viewType": "XML",
+          "viewId": "detail",
+          "viewName": "Detail"
         }
       }
     },
